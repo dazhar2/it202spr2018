@@ -41,7 +41,7 @@ function doSearch() {
   
   url += '?' + $.param({
     'api-key': "bb39364e5757463f839f9b6d8bbb5027",
-    'query': query
+    'query': $("#query").val()
   });
   
   $.ajax({

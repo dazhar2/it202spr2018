@@ -47,13 +47,23 @@ function doSearch() {
   $.ajax({
     url: url,
     method: 'GET',
-    }).done(function(result) {
-    console.log(result);
-    }).fail(function(err) {
+    }).
+    done(function(result) {
+    //console.log(result);
+    loadResponse(result);
+    }).
+    fail(function(err) {
     throw err;
   });
 }
  
+ function loadResponse(response) {
+   $.each(response.results, function(i,v) {
+     console.log(i, v);
+     $("#result").append(v.display_title + "<br>")
+   });
+
+ }
 </script>
 
 </body>

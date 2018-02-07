@@ -27,11 +27,32 @@
 </div>
 <div class="container" id="search">
       <input type="text" id="query" placeholder="Search" required>
-        <button type="button" class="btn btn-danger" id="search">Search</button>
+        <button type="button" class="btn btn-danger" id="buttonSearch">Search</button>
 </div>
 <div class="container" id="result">
 </div>
-
+<script>
+function doSearch() {
+  
+  var query = $('#query').val();
+  var url = "https://api.nytimes.com/svc/movies/v2/reviews/search.json";
+  
+  url += '?' + $.param({
+    'api-key': "bb39364e5757463f839f9b6d8bbb5027",
+    'query': query
+  });
+  
+  $.ajax({
+    url: url,
+    method: 'GET',
+    }).done(function(result) {
+    console.log(result);
+    }).fail(function(err) {
+    throw err;
+  });
+}
+ 
+</script>
 
 </body>
 </html>

@@ -1,0 +1,31 @@
+header.masthead {
+  position: relative;
+  background-color: $gray-800;
+  @include background-cover;
+
+  .overlay {
+    position: absolute;
+    background-color: $gray-900;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0.3;
+  }
+  h1 {
+    font-size: 2rem;
+  }
+  @media (min-width: 768px) {
+
+    h1 {
+      font-size: 3rem;
+    }
+  }
+  .carousel-item {
+  background: no-repeat center center scroll;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+}

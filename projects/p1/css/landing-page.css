@@ -1,5 +1,5 @@
 body {
-  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif
 }
 
 h1,
@@ -8,129 +8,132 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: 700;
+    font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 700
 }
 
 header.masthead {
-  position: relative;
-  background-color: #343a40;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+    position: relative;
+    background-color: #343a40;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 
 }
 
 header.masthead .overlay {
-  position: absolute;
-  background-color: #212529;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  opacity: 0.3;
+    position: absolute;
+    background-color: #212529;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    opacity: .3
 }
 
 header.masthead h1 {
-  font-size: 2rem;
+    font-size: 2rem
 }
 
-@media (min-width: 768px) {
-  header.masthead {
+@media (min-width:768px) {
+    header.masthead {
 
-  }
-  header.masthead h1 {
-    font-size: 3rem;
-  }
+    }
+    header.masthead h1 {
+        font-size: 3rem
+    }
 }
 
 .showcase .showcase-text {
-  padding: 3rem;
+    padding: 3rem
 }
 
 .showcase .showcase-img {
-  min-height: 30rem;
-  background-size: cover;
+    min-height: 30rem;
+    background-size: cover
 }
 
-@media (min-width: 768px) {
-  .showcase .showcase-text {
-    padding: 7rem;
-  }
+@media (min-width:768px) {
+    .showcase .showcase-text {
+        padding: 7rem
+    }
 }
 
 .features-icons {
-  padding-top: 7rem;
-  padding-bottom: 7rem;
+    padding-top: 7rem;
+    padding-bottom: 7rem
 }
 
 .features-icons .features-icons-item {
-  max-width: 20rem;
+    max-width: 20rem
 }
 
 .features-icons .features-icons-item .features-icons-icon {
-  height: 7rem;
+    height: 7rem
 }
 
 .features-icons .features-icons-item .features-icons-icon i {
-  font-size: 4.5rem;
+    font-size: 4.5rem
 }
 
 .features-icons .features-icons-item:hover .features-icons-icon i {
-  font-size: 5rem;
+    font-size: 5rem
 }
 
 .testimonials {
-  padding-top: 7rem;
-  padding-bottom: 7rem;
+    padding-top: 7rem;
+    padding-bottom: 7rem
 }
 
 .testimonials .testimonial-item {
-  max-width: 18rem;
+    max-width: 18rem
 }
 
 .testimonials .testimonial-item img {
-  max-width: 12rem;
-  box-shadow: 0px 5px 5px 0px #adb5bd;
+    max-width: 12rem;
+    box-shadow: 0 5px 5px 0 #adb5bd
 }
 
 .call-to-action {
-  position: relative;
-  background-color: #343a40;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  padding-top: 7rem;
-  padding-bottom: 7rem;
+    position: relative;
+    background-color: #343a40;
+    background: url(../img/bg-masthead.jpg) no-repeat center center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    padding-top: 7rem;
+    padding-bottom: 7rem
 }
 
 .call-to-action .overlay {
-  position: absolute;
-  background-color: #212529;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  opacity: 0.3;
+    position: absolute;
+    background-color: #212529;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    opacity: .3
 }
 
 footer.footer {
-  padding-top: 4rem;
-  padding-bottom: 4rem;
+    padding-top: 4rem;
+    padding-bottom: 4rem
 }
 
 .carousel-item {
-  background: no-repeat center center scroll;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+    height: 65vh;
+    min-height: 300px;
+    background: no-repeat center center scroll;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 #mainNav {
-    background-color: #212529
+    background-color: #007fa5
 }
 
 #mainNav .navbar-toggler {
@@ -138,14 +141,14 @@ footer.footer {
     right: 0;
     padding: 13px;
     text-transform: uppercase;
-    color: #fff;
+    color: #007fa5;
     border: 0;
-    background-color: #fed136;
+    background-color: #fff;
     font-family: Montserrat, 'Helvetica Neue', Helvetica, Arial, sans-serif
 }
 
 #mainNav .navbar-brand {
-    color: #fed136;
+    color: #fff;
     font-family: 'Kaushan Script', 'Helvetica Neue', Helvetica, Arial, cursive
 }
 
@@ -153,7 +156,7 @@ footer.footer {
 #mainNav .navbar-brand:active,
 #mainNav .navbar-brand:focus,
 #mainNav .navbar-brand:hover {
-    color: #fec503
+    color: #fff
 }
 
 #mainNav .navbar-nav .nav-item .nav-link {
@@ -167,7 +170,7 @@ footer.footer {
 
 #mainNav .navbar-nav .nav-item .nav-link.active,
 #mainNav .navbar-nav .nav-item .nav-link:hover {
-    color: #fed136
+    color: #fff
 }
 
 @media (min-width:992px) {
@@ -199,3 +202,57 @@ footer.footer {
         padding: 12px 0
     }
 }
+
+  .bg-grey {
+      background-color: #f6f6f6;
+  }
+  
+  .glyphicon {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #f4511e;
+  }
+  
+  .slideanim {visibility:hidden;}
+  .slide {
+      animation-name: slide;
+      -webkit-animation-name: slide;
+      animation-duration: 1s;
+      -webkit-animation-duration: 1s;
+      visibility: visible;
+  }
+  @keyframes slide {
+    0% {
+      opacity: 0;
+      transform: translateY(70%);
+    } 
+    100% {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+  }
+  @-webkit-keyframes slide {
+    0% {
+      opacity: 0;
+      -webkit-transform: translateY(70%);
+    } 
+    100% {
+      opacity: 1;
+      -webkit-transform: translateY(0%);
+    }
+  }
+  
+    .container-fluid {
+      padding: 60px 50px;
+  }
+  
+  .btn{
+      background-color: transparent;
+    color: #007fa5
+  }
+  
+  .btn:hover {
+      border: 1px solid black;
+      background-color: white !important;
+      color: black;
+  }

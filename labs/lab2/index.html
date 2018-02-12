@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <!-- Theme Made By www.w3schools.com - No Copyright -->
   <title>Lab 2</title>
@@ -9,62 +10,104 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
-  .jumbotron {
+    .jumbotron {
       background-color: #f4511e;
       color: #fff;
-  }
-  .bg-grey {
+    }
+
+    .bg-grey {
       background-color: #f6f6f6;
-  }
+    }
+
+    .screen {
+      display: none;
+    }
   </style>
 </head>
+
 <body>
 
 
 
-<div class="container" id="home">
-</div>
-<div class="container" id="search">
-      <input type="text" id="query" placeholder="Search" required>
-        <button type="button" class="btn btn-danger" id="buttonSearch">Search</button>
-</div>
-<div class="container" id="result">
-</div>
-<script>
+  <div class="container" id="home">
+    <h1>Home </h1>
+    <p>Directions: </p>
+    <ol>
+      <li>Type movie into search box.</li>
+      <li>Once done, press the search button to retrieve list of movies.</li>
+    </ol>
+    <button type="button" class="btn btn-danger" id="getStarted">Get Started</button>
 
-document.getElementById("buttonSearch").addEventListener("click", doSearch);
+  </div>
+  <div class="container" id="search">
+    <h1>Search for Movies</h1>
+    <input type="text" id="query" placeholder="Search" required>
+    <button type="button" class="btn btn-danger" id="buttonSearch">Search</button>
+  </div>
+  <div class="container" id="result">
+        <div class="card">
+          <div class="card-header" id="template">
+              <h1>Results</h1>
 
-function doSearch() {
-  
-  var query = $('#query').val();
-  var url = "https://api.nytimes.com/svc/movies/v2/reviews/search.json";
-  
-  url += '?' + $.param({
-    'api-key': "bb39364e5757463f839f9b6d8bbb5027",
-    'query': $("#query").val()
-  });
-  
-  $.ajax({
-    url: url,
-    method: 'GET',
-    }).
-    done(function(result) {
-    //console.log(result);
-    loadResponse(result);
-    }).
-    fail(function(err) {
-    throw err;
-  });
-}
- 
- function loadResponse(response) {
-   $.each(response.results, function(i,v) {
-     console.log(i, v);
-     $("#result").append(v.display_title + "<br>")
-   });
+          </div>
+          <div class="card-body">
+            <p id="movies"></p>
+          </div>
+        </div>
+        
+  </div>
+  <script>
+    $(function() {
+      $("#home").show();
+      $("#search").hide();
+      $("#result").hide();
+    });
 
- }
-</script>
+    document.getElementById("buttonSearch").addEventListener("click", doSearch);
+
+    document.getElementById("getStarted").addEventListener("click", hideHomeScreen);
+
+    function hideHomeScreen() {
+      $("#home").hide();
+      $("#search").show();
+      $("#result").hide();
+    }
+
+    function doSearch() {
+
+      var query = $('#query').val();
+      var url = "https://api.nytimes.com/svc/movies/v2/reviews/search.json";
+
+      url += '?' + $.param({
+        'api-key': "bb39364e5757463f839f9b6d8bbb5027",
+        'query': $("#query").val()
+      });
+
+      $.ajax({
+        url: url,
+        method: 'GET',
+      }).
+      done(function(result) {
+        //console.log(result);
+        $("#home").hide();
+        $("#search").hide();
+        $("#result").show();
+        loadResponse(result);
+      }).
+      fail(function(err) {
+        throw err;
+      });
+    }
+
+    function loadResponse(response) {
+      $.each(response.results, function(i, v) {
+        console.log(i, v);
+        $("#movies").append(v.display_title + "<br>")
+      });
+
+    }
+  </script>
 
 </body>
+
 </html>

@@ -46,11 +46,7 @@ document.getElementById("buttonSearch").addEventListener("click", getWeatherDemo
 
     $.get('https://query.yahooapis.com/v1/public/yql?q=select * from weather.forecast ' +
           'where woeid in (select woeid from geo.places(1) where text="' + city +'")&format=json', function (data) {
-        console.log(data);
-        console.log(
-            data.query.results.channel.item.condition.temp +
-            data.query.results.channel.units.temperature
-        );
+        
         
        var  x = data.query.results.channel
 
@@ -62,13 +58,9 @@ document.getElementById("buttonSearch").addEventListener("click", getWeatherDemo
 
     });
     
-    function loadResponse(response) {
-      $.each(response, function(i,v) {
-      console.log(i, v);
-     $("#result").append(v.ite + "<br>")
-   });
+
 }
-}
+
 </script>
 
 

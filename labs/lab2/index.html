@@ -45,10 +45,10 @@
     <button type="button" class="btn btn-danger" id="buttonSearch">Search</button>
   </div>
   <div class="container" id="result">
+    <h1>Results</h1>
         <div class="card">
           <div class="card-header" id="template">
-              <h1>Results</h1>
-
+          
           </div>
           <div class="card-body">
             <p id="movies"></p>
@@ -100,8 +100,18 @@
     }
 
     function loadResponse(response) {
+      var length = 0;
+       $.each(response.results, function(i, v) {
+        length++;
+      });
+      
+      $("#movies").append("Number of results returned: " + length);
+
       $.each(response.results, function(i, v) {
         console.log(i, v);
+       
+        $("#template").clone().appendTo("#movies");
+ 
         $("#movies").append(v.display_title + "<br>")
       });
 

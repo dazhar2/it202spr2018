@@ -173,15 +173,6 @@
         <li><a href="#band">BAND</a></li>
         <li><a href="#tour">TOUR</a></li>
         <li><a href="#contact">CONTACT</a></li>
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">MORE
-          <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Merchandise</a></li>
-            <li><a href="#">Extras</a></li>
-            <li><a href="#">Media</a></li> 
-          </ul>
-        </li>
         <li><a href="#"><span class="glyphicon glyphicon-search"></span></a></li>
       </ul>
     </div>
@@ -225,18 +216,18 @@
       </div>
       
       <div class="item">
-        <img src="cghicago.jpg" alt="PotatoCat" width="1200" height="700">
+        <img src="chicago.jpg" alt="PotatoCat" width="1200" height="700">
         <div class="carousel-caption">
-          <h3>PotatoCat</h3>
-          <p>I am a Potato!</p>
+          <h3>Potato1</h3>
+          <p>I am a Potato</p>
         </div>      
       </div>
       
       <div class="item">
         <img src="la.jpg" alt="PotatoCat" width="1200" height="700">
         <div class="carousel-caption">
-          <h3>PotatoCat2</h3>
-          <p>I am a Potato!</p>
+          <h3>Potato2</h3>
+          <p>I am a Potato</p>
         </div>      
       </div>
       
@@ -320,7 +311,7 @@
     </ul>
     
     <div class="row text-center">
-      <div class="col-sm-4">
+      <div class="col-sm-6">
         <div class="thumbnail">
           <img src="paris.jpg" alt="Paris" width="400" height="300">
           <p><strong>Paris</strong></p>
@@ -328,19 +319,11 @@
           <button class="btn" data-toggle="modal" data-target="#myModal">Buy Tickets</button>
         </div>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-6">
         <div class="thumbnail">
           <img src="newyork.jpg" alt="New York" width="400" height="300">
           <p><strong>New York</strong></p>
           <p>Saturday 28 November 2015</p>
-          <button class="btn" data-toggle="modal" data-target="#myModal">Buy Tickets</button>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="thumbnail">
-          <img src="sanfran.jpg" alt="San Francisco" width="400" height="300">
-          <p><strong>San Francisco</strong></p>
-          <p>Sunday 29 November 2015</p>
           <button class="btn" data-toggle="modal" data-target="#myModal">Buy Tickets</button>
         </div>
       </div>
@@ -419,6 +402,8 @@
     <li class="active"><a data-toggle="tab" href="#home">Mike</a></li>
     <li><a data-toggle="tab" href="#menu1">Chandler</a></li>
     <li><a data-toggle="tab" href="#menu2">Peter</a></li>
+    <li><a data-toggle="tab" href="#menu3">Banana</a></li>
+
   </ul>
 
   <div class="tab-content">
@@ -434,6 +419,10 @@
       <h2>Peter Griffin, Bass player</h2>
       <p>I mean, sometimes I enjoy the show, but other times I enjoy other things.</p>
     </div>
+    <div id="menu3" class="tab-pane fade">
+      <h2>Banana</h2>
+      <p>Hello I am banana.</p>
+    </div>
   </div>
 </div>
 
@@ -441,14 +430,14 @@
 <div id="googleMap"></div>
 <script>
 function myMap() {
-var myCenter = new google.maps.LatLng(41.878114, -87.629798);
+var myCenter = new google.maps.LatLng(41.87149, -87.65366);
 var mapProp = {center:myCenter, zoom:12, scrollwheel:false, draggable:false, mapTypeId:google.maps.MapTypeId.ROADMAP};
 var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
 var marker = new google.maps.Marker({position:myCenter});
 marker.setMap(map);
 }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu-916DdpKAjTmJNIgngS6HL_kDIKU0aU&callback=myMap"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVu7g0xWmPW4MltQHT_CjzGmNa_zNM4sA&callback=myMap"></script>
 <!--
 To use this code on your website, get a free API key from Google.
 Read more at: https://www.w3schools.com/graphics/google_maps_basic.asp

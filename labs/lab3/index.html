@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <title>repl.it</title>
+
+</head>
+
+<body>
+  <canvas id="myCanvas" width="400" height="600"></canvas>
+  <script>
+    var c = document.getElementById("myCanvas");
+    var ctx = c.getContext("2d");
+
+    var game = { lives: 3, score: 0, state: { play: true, pause: false, over: false } };
+    var player = { x: 75, y: 110, color: "green", radius: 25 };
+    var harm = { x: c.width, y: Math.floor(Math.random() * 251), color: "blue", radius: 25 };
+    var benefit = { x: c.width, y: Math.floor(Math.random() * 251), color: "red", radius: 25 };
+
+    //up
+    $(document).keydown(function(e) {
+      if (e.keyCode == 38) {
+        player.y -= 5;
+        return false;
+      }
+    });
+
+    //down
+    $(document).keydown(function(e) {
+      if (e.keyCode == 40) {
+        player.y += 5;
+        return false;
+      }
+    });
+
+
+    function draw() {
+
+      if (game.state.play) {
+        ctx.clearRect(0, 0, c.width, c.height);
+
+
+        // draw harm
+        harm.x--;
+        benefit.x--;
+
+        if (harm.x <= 0) {
+          harm.x = c.width;
+          harm.y = Math.floor(Math.random() * 251);
+        }
+
+        ctx.fillStyle = harm.color;
+        ctx.beginPath();
+        ctx.arc(harm.x, harm.y, harm.radius, 0, 2 * Math.PI);
+        ctx.fill();
+
+
+        // collision check, using code from 
+        //   https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
+
+        var dxHarm = player.x - harm.x;
+        var dyHarm = player.y - harm.y;
+        var distanceHarm = Math.sqrt(dxHarm * dxHarm + dyHarm * dyHarm);
+
+
+        if (distanceHarm < player.radius + harm.radius) {
+          // collision detected!
+          console.log("collision");
+
+          harm.x = c.width; // reposition harm 
+          harm.y = Math.floor(Math.random() * 251);
+          game.lives--; // reduce lives
+
+          // TODO: handle game over condition
+          if (game.lives == 0) {
+            game.state.over = true;
+            game.state.play = false;
+          }
+          
+          console.log(game);
+        }
+
+
+        // TODO:  draw benefit
+
+        if (benefit.x <= 0) {
+          benefit.x = c.width;
+          benefit.y = Math.floor(Math.random() * 251);
+        }
+
+        ctx.fillStyle = benefit.color;
+        ctx.beginPath();
+        ctx.arc(benefit.x, benefit.y, benefit.radius, 0, 2 * Math.PI);
+        ctx.fill();
+
+        var dxBenefit = player.x - benefit.x;
+        var dyBenefit = player.y - benefit.y;
+        var distanceBenefit = Math.sqrt(dxBenefit * dxBenefit + dyBenefit * dyBenefit);
+
+        if (distanceBenefit < player.radius + benefit.radius) {
+          // collision detected!
+          console.log("collision");
+
+          benefit.x = c.width; // reposition harm
+          benefit.y = Math.floor(Math.random() * 251);
+          game.lives++;
+          game.score++; // reduce lives
+
+          // TODO: handle game over condition
+
+
+          console.log(game);
+        }
+
+        // draw player
+        ctx.fillStyle = player.color;
+        ctx.beginPath();
+        ctx.arc(player.x, player.y, player.radius, 0, 2 * Math.PI);
+        ctx.fill();
+
+
+
+        // TODO:  draw score and lives
+
+        ctx.font = "20px Georgia";
+        ctx.fillText("Score: " + game.score, 10, 50);
+
+
+
+        requestAnimationFrame(draw);
+      }
+      else if(game.state.over){
+      ctx.clearRect(0, 0, c.width, c.height);
+
+      ctx.font = "20px Georgia";
+      ctx.fillText("Game Over", 10, 50);
+              requestAnimationFrame(draw);
+
+      }
+
+    }
+    
+
+
+    draw();
+
+    // TODO:  keyboard events to change player y coordinate
+
+
+    // TODO:  space bar to pause game
+  </script>
+</body>
+
+</html>

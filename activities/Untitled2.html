@@ -54,9 +54,10 @@
         title: 'Chicago'
       });
 
-      marker.addListener('click', function() {
+    google.maps.event.addListener(marker, 'click', function () {
         infowindow.open(map, marker);
-      });
+    });
+
 
       addToMap(map);
     }

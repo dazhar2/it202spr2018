@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Theme Made By www.w3schools.com - No Copyright -->
+  <title>Project 2</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <style>
+    #home {
+      padding-top: 30px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    h1,
+    h2 {
+      text-align: center;
+    }
+
+    .btnContainer {
+      padding: 10px;
+    }
+
+    .schoolListing {
+      padding: 7px;
+      height: 700px;
+      border-style: solid;
+      border-width: 1px;
+      border-color: #d3d3d3;
+    }
+
+    .schoolHeader {
+      padding: 0px 5px 5px 5px;
+    }
+
+    .schoolBtn {
+      position: absolute;
+      width: 50%;
+      bottom: 5px;
+      left: 25%;
+    }
+  </style>
+</head>
+<body>
+
+
+
+  <div class="col-md-12 container text-center" id="home">
+    <h1>Chicago Public Schools</h1>
+    <row>
+      <div class="col-md-4 "></div>
+      <div class="col-md-4 h-100 row align-items-center">
+        <p>
+          To search for a chicago public school, click on the button below to get started. From there, choose from a dropdown for the school-type you're interested in to see a list of schools. If you wish to look at the locations on the map, click on the map button
+          to view the map page.</p>
+      </div>
+      <div class="col-md-4 "></div>
+    </row>
+    <div class="col-md-12 text-center">
+      <button type="button" class="btn btn-danger" id="getStarted">Get Started</button>
+    </div>
+  </div>
+  
+  
+  
+  <div class="container" id="search">
+    <h1>Search For A Chicago Public School</h1>
+    <h2> Choose School Type:</h2>
+    <row>
+      <div class="col-md-4 "></div>
+      <div class="col-md-4 text-center">
+        <form id="myForm">
+          <select id="select" onchange="showSchoolByType()">
+            <option>School Type Options</option>
+          </select>
+        </form>
+      </div>
+      <div class="col-md-4 "></div>
+    </row>
+    <row>
+      <div class="col-md-12 text-center btnContainer">
+        <button type="button" class="btn btn-danger" id="viewMap">View the Map</button>
+      </div>
+    </row>
+    <div id="listOfSchools"> </div>
+  </div>
+
+
+  <div class="container" id="mapResult">
+    <h1> Chicago Public Schools Map</h1>
+    <div id="googleMap" style="height:400px;width:100%;"></div>
+    <div class="col-md-12 text-center btnContainer">
+        <button type="button" class="btn btn-danger" id="returnToSearch">Return To Search Page</button>
+      </div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      $("#home").show();
+      $("#search").hide();
+      $("#mapResult").hide();
+    });
+
+    var chicagoSchoolData = new Set();
+    var locationsSet = new Set();
+    var markers = new Array();
+    var schoolTypeIndex = 0;
+    
+    var markerIcons = ["http://maps.google.com/mapfiles/ms/icons/blue.png",
+                        "http://maps.google.com/mapfiles/ms/icons/orange.png",
+                        "http://maps.google.com/mapfiles/ms/icons/red.png",
+                        "http://maps.google.com/mapfiles/ms/icons/pink.png",
+                        "http://maps.google.com/mapfiles/ms/icons/purple.png",
+                        "http://maps.google.com/mapfiles/ms/icons/yellow.png",
+                        "http://maps.google.com/mapfiles/ms/icons/lightblue.png",
+                        "http://maps.google.com/mapfiles/ms/icons/blue-pushpin.png",
+                        "http://maps.google.com/mapfiles/ms/icons/orange-pushpin.png",
+                        "http://maps.google.com/mapfiles/ms/icons/red-pushpin.png",
+                        "http://maps.google.com/mapfiles/ms/icons/pink-pushpin.png",
+                        "http://maps.google.com/mapfiles/ms/icons/purple-pushpin.png",
+                        "http://maps.google.com/mapfiles/ms/icons/yellow-pushpin.png",
+                        "http://maps.google.com/mapfiles/ms/icons/lightblue-pushpin.png"
+    ];
+
+    function myMap() {
+      var myCenter = new google.maps.LatLng(41.881832, -87.623177);
+      var mapProp = { center: myCenter, zoom: 12, scrollwheel: false, draggable: false, mapTypeId: google.maps.MapTypeId.ROADMAP };
+      var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+
+
+      for (let school of chicagoSchoolData) {
+        var location = school.location.coordinates;
+        var lat = location[1];
+        var long = location[0];
+        var position = new google.maps.LatLng(lat, long);
+        var marker = new google.maps.Marker({
+          position: position,
+          map: map,
+          title: 'Chicago',
+          icon: markerIcons[schoolTypeIndex]
+        });
+
+        var infowindow = new google.maps.InfoWindow({
+          content: "<p>" + school.long_name + "</p>"
+        });
+
+        google.maps.event.addListener(marker, 'mouseover', (function(marker) {
+          return function() {
+            var content = "<p>" + school.long_name + "</p>";
+            infowindow.setContent(content);
+            infowindow.open(map, marker);
+          }
+        })(marker));
+
+        markers.push(marker);
+      }
+    }
+
+    function removeMarkers() {
+      console.log(markers.length);
+      for (i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+      }
+
+      markers = new Array();
+    }
+
+    document.getElementById("getStarted").addEventListener("click", showSearchPage);
+    document.getElementById("viewMap").addEventListener("click", viewMap);
+    document.getElementById("returnToSearch").addEventListener("click", showSearchPage);
+
+    function showSearchPage() {
+      $("#home").hide();
+      $("#search").show();
+      $("#result").hide();
+
+      var url = "https://data.cityofchicago.org/resource/76dk-7ieb.json";
+
+      $.ajax({
+        url: url,
+        method: 'GET',
+      }).
+      done(function(result) {
+        $("#home").hide();
+        $("#search").hide();
+        $("#mapResult").show();
+        createSearchOptions(result);
+      }).
+      fail(function(err) {
+        throw err;
+      });
+    }
+
+    function showSchoolByType() {
+
+      var selectMenu = document.getElementById("select");
+      schoolTypeIndex = selectMenu.selectedIndex;
+      var selectedSchoolType = selectMenu.options[schoolTypeIndex].text;
+
+      var url = "https://data.cityofchicago.org/resource/76dk-7ieb.json?$where=school_type = '" + selectedSchoolType + "'";
+
+      $.ajax({
+        url: url,
+        method: 'GET',
+      }).
+      done(function(result) {
+        displaySchools(result);
+      }).
+      fail(function(err) {
+        throw err;
+      });
+    }
+
+    function displaySchools(results) {
+      chicagoSchoolData = new Set();
+      document.getElementById("listOfSchools").innerHTML = " "
+      $.each(results, function(i, school) {
+        if (i % 3 == 0) {
+          content = "<row><div class='col-md-4 schoolListing'> <div class='schoolHeader'><h4 class='h3'>" + school.long_name +
+            "</h4></div> <p>" + school.summary + "<br><br>" +
+            "Address: " + school.location_address + "<br>" +
+            "Grades Offered: " + school.grades_offered + "<br>" +
+            "Overall Rating: " + school.overall_rating + "<br>" +
+            "</p> <a href='" + school.website + "'>" +
+            "<button type='button' class='btn btn-danger schoolBtn text-center'>Go To School Website</button> </a>" +
+            "</div>";
+        }
+        else if (i % 3 == 2 || i == (results.length - 1)) {
+          content = "<div class='col-md-4 schoolListing'><div class='schoolHeader'><h4 class='h3'>" + school.long_name +
+            "</h4></div> <p>" + school.summary + "<br><br>" +
+            "Address: " + school.location_address + "<br>" +
+            "Grades Offered: " + school.grades_offered + "<br>" +
+            "Overall Rating: " + school.overall_rating + "<br>" +
+             "</p>" + "<a href='" + school.website + "'>" +
+            "<button type='button' class='btn btn-danger schoolBtn text-center'>Go To School Website</button> </a>" +
+            "</div></row>";
+        }
+        else {
+          content = "<div class='col-md-4 schoolListing'> <div class='schoolHeader'><h4 class='h3'>" + school.long_name +
+            "</h4></div> <p>" + school.summary + "<br><br>" +
+            "Address: " + school.location_address + "<br>" +
+            "Grades Offered: " + school.grades_offered + "<br>" +
+            "Overall Rating: " + school.overall_rating + "<br>" +
+             "</p>" + "<a href='" + school.website + "'>" +
+            "<button type='button' class='btn btn-danger schoolBtn text-center'>Go To School Website</button> </a>" +
+            "</div>";
+        }
+        $("#listOfSchools").append(content)
+        locationsSet.add(school.location.coordinates);
+        chicagoSchoolData.add(school);
+      });
+
+      removeMarkers();
+      myMap();
+
+    }
+
+    function createSearchOptions(response) {
+      var schoolSet = new Set();
+
+      var length = Object.keys(response).length;
+      $.each(response, function(i, school) {
+        schoolSet.add(school.school_type);
+
+      });
+
+      var i = 0;
+
+      for (let schoolType of schoolSet) {
+        $('#select').append($('<option></option>').val(i).html(schoolType));
+        i++;
+      }
+
+      $("#home").hide();
+      $("#search").show();
+      $("#mapResult").hide();
+
+    }
+    
+    function viewMap(){
+      $("#home").hide();
+      $("#search").hide();
+      $("#mapResult").show();
+    }
+    
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVu7g0xWmPW4MltQHT_CjzGmNa_zNM4sA&callback=myMap"></script>
+
+</body>
+
+</html>

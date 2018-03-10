@@ -11,19 +11,50 @@
 </head>
 
 <body>
-  <canvas id="myCanvas" width="400" height="600"></canvas>
+  <canvas id="myCanvas" width="400" height="250" style="background: url('bg.png')"></canvas>
   <script>
     var c = document.getElementById("myCanvas");
     var ctx = c.getContext("2d");
+    var background = new Image();
+    background.onload = function(){
+      ctx.drawImage(background,0,0);   
+    }
+        background.src = "bg.png";
 
-    var game = { lives: 3, score: 0, state: { play: true, pause: false, over: false } };
-    var player = { x: 75, y: 110, color: "green", radius: 25 };
-    var harm = { x: c.width, y: Math.floor(Math.random() * 251), color: "blue", radius: 25 };
-    var benefit = { x: c.width, y: Math.floor(Math.random() * 251), color: "red", radius: 25 };
 
+
+    var game = { lives: 3, score: 0, state: { play: true, over: false } };
+    var player = { x: 75, y: 110, color: "blue", height: 50};
+    var playerImg = new Image();
+    playerImg.onload = function() {
+      //ctx.drawImage(imgPlayer, 75, 100);
+      ctx.drawImage(playerImg, 75, 100, 50, 50)
+
+     };
+    playerImg.src = 'mariojump.png';
+    
+    
+    var harm = { x: c.width, y: Math.floor(Math.random() * 251), color: "red", height: 50 };
+    var harmImg = new Image();
+    harmImg.onload = function() {
+        ctx.drawImage(harmImg, harm.x, harm.y, harm.height, harm.height);
+
+     };
+    harmImg.src = 'kingboo.png';
+    
+    
+    var benefit = { x: c.width, y: Math.floor(Math.random() * 251), color: "green", height:50 };
+    var benefitImg = new Image();
+    harmImg.onload = function() {
+        ctx.drawImage(benefitImg, benefit.x, benefit.y, benefit.height, benefit.height);
+
+     };
+    benefitImg.src = 'mushroom.png';
+    
     //up
     $(document).keydown(function(e) {
       if (e.keyCode == 38) {
+        
         player.y -= 5;
         return false;
       }
@@ -45,7 +76,12 @@
 
 
         // draw harm
-        harm.x--;
+        if(game.score == 0){
+          harm.x--;
+        }
+        else{
+          harm.x -= game.score*2;
+        }
         benefit.x--;
 
         if (harm.x <= 0) {
@@ -53,11 +89,7 @@
           harm.y = Math.floor(Math.random() * 251);
         }
 
-        ctx.fillStyle = harm.color;
-        ctx.beginPath();
-        ctx.arc(harm.x, harm.y, harm.radius, 0, 2 * Math.PI);
-        ctx.fill();
-
+        ctx.drawImage(harmImg, harm.x, harm.y, harm.height, harm.height);
 
         // collision check, using code from 
         //   https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
@@ -67,7 +99,7 @@
         var distanceHarm = Math.sqrt(dxHarm * dxHarm + dyHarm * dyHarm);
 
 
-        if (distanceHarm < player.radius + harm.radius) {
+        if (distanceHarm < player.height/2 + harm.height/2) {
           // collision detected!
           console.log("collision");
 
@@ -92,23 +124,20 @@
           benefit.y = Math.floor(Math.random() * 251);
         }
 
-        ctx.fillStyle = benefit.color;
-        ctx.beginPath();
-        ctx.arc(benefit.x, benefit.y, benefit.radius, 0, 2 * Math.PI);
-        ctx.fill();
+        ctx.drawImage(benefitImg, benefit.x, benefit.y, benefit.height, benefit.height);
+
 
         var dxBenefit = player.x - benefit.x;
         var dyBenefit = player.y - benefit.y;
         var distanceBenefit = Math.sqrt(dxBenefit * dxBenefit + dyBenefit * dyBenefit);
 
-        if (distanceBenefit < player.radius + benefit.radius) {
+        if (distanceBenefit < player.height + benefit.height/2) {
           // collision detected!
           console.log("collision");
 
           benefit.x = c.width; // reposition harm
           benefit.y = Math.floor(Math.random() * 251);
-          game.lives++;
-          game.score++; // reduce lives
+          game.score++; 
 
           // TODO: handle game over condition
 
@@ -117,18 +146,15 @@
         }
 
         // draw player
-        ctx.fillStyle = player.color;
-        ctx.beginPath();
-        ctx.arc(player.x, player.y, player.radius, 0, 2 * Math.PI);
-        ctx.fill();
+        ctx.drawImage(playerImg, player.x, player.y, player.height, player.height);
+
 
 
 
         // TODO:  draw score and lives
-
         ctx.font = "20px Georgia";
-        ctx.fillText("Score: " + game.score, 10, 50);
-
+        ctx.fillText("Score: " + game.score, 10, 20);
+        ctx.fillText("Lives: " + game.lives, 100, 20);
 
 
         requestAnimationFrame(draw);
@@ -137,7 +163,7 @@
       ctx.clearRect(0, 0, c.width, c.height);
 
       ctx.font = "20px Georgia";
-      ctx.fillText("Game Over", 10, 50);
+      ctx.fillText("Game Over", 10, 20);
               requestAnimationFrame(draw);
 
       }

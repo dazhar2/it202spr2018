@@ -6,13 +6,9 @@
     <body>
         <img src="ostrich.jpg"></img>
         <script type="text/javascript" src="">
-        caches.open('test-cache').then(function(cache) { 
-            cache.addAll(['/ostrich.jpg'])
-            .then(function() { 
-                
-             });
-             
-        });
+         caches.open('test-cache').then(function(cache) {
+  cache.add('ostrich.jpg');  
+});
         
 
 

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Test 2</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <style>
+
+  </style>
+</head>
+<body>
+    
+    <script >
+    $(document).ready(function() {
+      showSearchPage();
+    });
+    
+    function showSearchPage() {
+      var url = "https://data.cityofchicago.org/resource/tt4n-kn4t.json";
+
+      $.ajax({
+        url: url,
+        method: 'GET',
+      }).
+      done(function(result) {
+        showResults(result);
+      }).
+      fail(function(err) {
+        throw err;
+      });
+    }
+    
+    function showResults(response) {
+      $.each(response, function(i, employee) {
+        if(employee.full_or_part_time == "P"){
+                  console.log(employee);
+                  var nameAndJob = "<p>Name : " + employee.name + " Job Title: " + employee.job_titles + "</p> <br>";;
+                $(nameAndJob).appendTo("body");
+        }
+      });
+
+    
+    }
+    </script>
+    
+</body>

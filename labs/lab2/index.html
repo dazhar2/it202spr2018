@@ -46,18 +46,20 @@
   </div>
   <div class="container" id="result">
     <h1>Results</h1>
-        <div class="card">
-          <div class="card-header" id="template">
-          
-          </div>
-          <div class="card-body">
-            <p id="movies"></p>
-          </div>
-        </div>
-        
+    <div class="card">
+      <div class="card-header" id="template">
+
+      </div>
+      <div class="card-body">
+        <p id="movies"></p>
+      </div>
+    </div>
+
   </div>
+
+
   <script>
-    $(function() {
+    $(function() { 
       $("#home").show();
       $("#search").hide();
       $("#result").hide();
@@ -101,23 +103,22 @@
 
     function loadResponse(response) {
       var length = 0;
-       $.each(response.results, function(i, v) {
+      $.each(response.results, function(i, v) {
         length++;
       });
-      
+
       $("#movies").append("Number of results returned: " + length);
 
       $.each(response.results, function(i, v) {
         console.log(i, v);
-       
+
         $("#template").clone().appendTo("#movies");
- 
+
         $("#movies").append(v.display_title + "<br>")
       });
 
     }
   </script>
-
 </body>
 
 </html>

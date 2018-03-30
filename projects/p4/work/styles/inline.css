@@ -339,9 +339,9 @@ body {
   .weather-forecast .icon.cloudy {
     background-image: url("https://preview.c9users.io/images/cloudy.png"); }
   .weather-forecast .icon.partly-cloudy-day {
-    background-image: url("https://preview.c9users.io/images/partly-cloudy.png"); }
+    background-image: url("./images/partly-cloudy.png"); }
   .weather-forecast .icon.partly-cloudy-night {
-    background-image: url("https://preview.c9users.io/images/partly-cloudy.png"); }
+    background-image: url("./images/partly-cloudy.png"); }
   .weather-forecast .icon.thunderstorms {
     background-image: url("https://preview.c9users.io/images/thunderstorm.png"); }
 

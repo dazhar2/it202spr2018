@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> </title>
+    </head>
+    <body>
+
+<script>
+    function getStuff(){
+    $.get("https://data.cityofchicago.org/resource/76dk-7ieb.json?$where=within_circle(location, 47.59, -122.33, 100)", function(response){console.log(response)});
+    }
+    </script>
+    </body>
+</html>

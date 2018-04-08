@@ -90,16 +90,14 @@
                 var maxY = $(window).height();
 
 
-
-
-                x += 90;
-                y += 90;
+                if (x > 90) { x = 90 };
+                if (x < -90) { x = -90 };
 
                 console.log(x);
                 console.log(y);
           
-                player.x = x;
-                player.y = y;
+                player.x += 2*y;
+                player.y += 2*x;
 
             }
 

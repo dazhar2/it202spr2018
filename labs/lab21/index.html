@@ -18,8 +18,11 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
     <script>
-    
-        
+        var synth = window.speechSynthesis;
+        var voices = synth.getVoices();
+
+        var utterThis = new SpeechSynthesisUtterance("Collision.");
+        utterThis.voice = voices[1];
 
         $(document).ready(function() {
             $("#canvas").attr("width", $(window).width());
@@ -30,7 +33,7 @@
             var player = { x: c.width / 2, y: c.height / 2, r: 20, color: "blue", speed: 10 };
             var target = { x: c.width / 4, y: c.height / 4, r: 20, color: "red" };
 
-            
+
             function draw() {
                 ctx.clearRect(0, 0, c.width, c.height);
 
@@ -50,15 +53,11 @@
                     console.log("collision");
 
                     //TODO:  add vibration upon collision
-                    window.navigator.vibrate([100]);
+                    //window.navigator.vibrate([100]);
 
                     //TODO:  add speechSynthesis notification of collision
-                    var synth = window.speechSynthesis;
-                    var voices = synth.getVoices();
 
-                    var utterThis = new SpeechSynthesisUtterance("Collision.");
-                    utterThis.voice = voices[1];
-        
+
                     synth.speak(utterThis);
 
                     player.x = c.width / 2;

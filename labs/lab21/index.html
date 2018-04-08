@@ -24,8 +24,8 @@
 
             var c = $("#canvas")[0];
             var ctx = c.getContext("2d");
-            var player = { x: c.width / 2, y: c.height / 2, r: 25, color: "blue", speed: 10 };
-            var target = { x: c.width / 4, y: c.height / 4, r: 25, color: "red" };
+            var player = { x: c.width / 2, y: c.height / 2, r: 20, color: "blue", speed: 10 };
+            var target = { x: c.width / 4, y: c.height / 4, r: 20, color: "red" };
 
             var utter = new SpeechSynthesisUtterance();
 
@@ -56,13 +56,13 @@
                     var synth = window.speechSynthesis;
                     var voices = synth.getVoices();
                     var voice = voices[40];
-                    
+
                     var utterThis = new SpeechSynthesisUtterance("Collision.");
 
                     synth.speak(utterThis);
-                        
-                    player.x =  c.width / 2;
-                    player.y =  c.height / 2;
+
+                    player.x = c.width / 2;
+                    player.y = c.height / 2;
 
                 }
 
@@ -83,6 +83,28 @@
 
             //https://developers.google.com/web/fundamentals/native-hardware/device-orientation/
 
+            function handleOrientation(event) {
+                var x = event.beta;
+                var y = event.gamma;
+                var maxX =  $(window).width();
+                var maxY = $(window).height();
+
+
+                if (x > 90) { x = 90 };
+                if (x < -90) { x = -90 };
+
+                x += 90;
+                y += 90;
+
+                console.log(x);
+                console.log(y);
+          
+                player.x = x;
+                player.y = y;
+
+            }
+
+            window.addEventListener('deviceorientation', handleOrientation);
 
 
             $(document).keydown(function(e) {

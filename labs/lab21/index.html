@@ -55,7 +55,7 @@
 
                     var synth = window.speechSynthesis;
                     var voices = synth.getVoices();
-                    var voice = voices[40];
+                    var voice = voices[1];
 
                     var utterThis = new SpeechSynthesisUtterance("Collision.");
 
@@ -95,9 +95,13 @@
 
                 console.log(x);
                 console.log(y);
-          
-                player.x += 2*y;
-                player.y += 2*x;
+
+                if(2*y < maxX){
+                    player.x += 2*y;
+                }
+                if(2*x < maxY){
+                    player.y += 2*x;
+                }
 
             }
 

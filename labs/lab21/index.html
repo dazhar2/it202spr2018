@@ -27,8 +27,11 @@
             var player = { x: c.width / 2, y: c.height / 2, r: 20, color: "blue", speed: 10 };
             var target = { x: c.width / 4, y: c.height / 4, r: 20, color: "red" };
 
-            var utter = new SpeechSynthesisUtterance();
+            var synth = window.speechSynthesis;
+            var voices = synth.getVoices();
+            var voice = voices[1];
 
+            var utterThis = new SpeechSynthesisUtterance("Collision.");
 
             function draw() {
                 ctx.clearRect(0, 0, c.width, c.height);
@@ -52,12 +55,6 @@
                     window.navigator.vibrate(1000);
 
                     //TODO:  add speechSynthesis notification of collision
-
-                    var synth = window.speechSynthesis;
-                    var voices = synth.getVoices();
-                    var voice = voices[1];
-
-                    var utterThis = new SpeechSynthesisUtterance("Collision.");
 
                     synth.speak(utterThis);
 
@@ -84,23 +81,23 @@
             //https://developers.google.com/web/fundamentals/native-hardware/device-orientation/
 
             function handleOrientation(event) {
-                var x = event.beta;
-                var y = event.gamma;
-                var maxX =  $(window).width();
+                var y = event.beta;
+                var x = event.gamma;
+                var maxX = $(window).width();
                 var maxY = $(window).height();
 
 
-                if (x > 90) { x = 90 };
-                if (x < -90) { x = -90 };
+                if (y > 90) { y = 90 };
+                if (y < -90) { y = -90 };
 
-                console.log(x);
                 console.log(y);
+                console.log(x);
 
-                if(2*y < maxX){
-                    player.x += 2*y;
+                if ((player.x + x) < maxX) {
+                    player.x += x;
                 }
-                if(2*x < maxY){
-                    player.y += 2*x;
+                if ((player.y + y) < maxY) {
+                    player.y += y;
                 }
 
             }

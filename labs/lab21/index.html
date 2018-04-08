@@ -24,6 +24,8 @@
         var utterThis = new SpeechSynthesisUtterance("Collision.");
         utterThis.voice = voices[1];
 
+        var speak = true;
+
         $(document).ready(function() {
             $("#canvas").attr("width", $(window).width());
             $("#canvas").attr("height", $(window).height());
@@ -53,7 +55,20 @@
                     console.log("collision");
 
                     //TODO:  add vibration upon collision
-                    //window.navigator.vibrate([100]);
+                    var navigator = window.navigator;
+                    
+                    navigator.vibrate = navigator.vibrate ||
+                        navigator.webkitVibrate ||
+                        navigator.mozVibrate ||
+                        navigator.msVibrate;
+
+                    if (navigator.vibrate) {
+                        console.log('vibration supported');
+                        navigator.vibrate(500);
+                    }
+                    else {
+                        console.log('vibration not supported');
+                    }
 
                     //TODO:  add speechSynthesis notification of collision
 
@@ -70,9 +85,6 @@
             }
 
             draw();
-
-
-
 
 
             //TODO:  add player control on mobile via device motion API

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <video id="player" controls autoplay></video>
+  <button id="capture">Capture</button>
+  <canvas id="canvas" width=320 height=240></canvas>
+  <script>
+    var requestBody;
+    const player = document.getElementById('player');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const captureButton = document.getElementById('capture');
+
+    const constraints = {
+      video: true,
+    };
+
+    captureButton.addEventListener('click', () => {
+      // Draw the video frame to the canvas.
+      getImageData();
+      context.drawImage(player, 0, 0, canvas.width, canvas.height);
+    });
+
+    // Attach the video stream to the video element and autoplay.
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then((stream) => {
+        player.srcObject = stream;
+      });
+
+
+  function getImageData(){
+    requestBody= {
+      "requests": [{
+        "image": {
+          "content": $("canvas")[0].toDataURL().split(',')[1]
+        },
+        "features": [{
+          "type": "LABEL_DETECTION",
+          "maxResults": 1
+        }]
+      }]
+    };
+
+    $.ajax({
+      method: 'POST',
+      contentType: 'application/json',
+      url: 'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyA0u_xBRKIJ0NZn1jTFLTQhiEB1ShIrgrY',
+      data: JSON.stringify(requestBody)
+    })
+    .done(function(response) {
+      console.log(response);
+      $("#imageData").html("<pre>" + JSON.stringify(response) + "</pre>");
+    })
+    .fail(function(err) {
+      throw err;
+    });
+    
+  }
+  
+  
+  </script>
+</body>
+
+</html>

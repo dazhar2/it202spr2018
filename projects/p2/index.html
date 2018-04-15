@@ -209,6 +209,7 @@
         method: 'GET',
       }).
       done(function(result) {
+        console.log(result);
         displaySchools(result);
       }).
       fail(function(err) {

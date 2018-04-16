@@ -9,21 +9,29 @@
   <video id="player" controls autoplay></video>
   <button id="capture">Capture</button>
   <canvas id="canvas" width=320 height=240></canvas>
+  <canvas id="collageCanvas" width="320" height="240"></canvas>
+  <canvas id="frameCanvas" width="320" height="240"></canvas>
+  <div id="imageData"></div>
   <script>
-    var requestBody;
-    const player = document.getElementById('player');
     const canvas = document.getElementById('canvas');
     const context = canvas.getContext('2d');
+    const collageCanvas = document.getElementById('collageCanvas');
+    const collageContext = collageCanvas.getContext('2d');
     const captureButton = document.getElementById('capture');
-
+    var requestBody, nextX = 0, nextY = 0;
+    collageCanvas.width = window.innerWidth;
+    collageCanvas.height = 300;
+          
     const constraints = {
       video: true,
     };
 
     captureButton.addEventListener('click', () => {
       // Draw the video frame to the canvas.
-      getImageData();
       context.drawImage(player, 0, 0, canvas.width, canvas.height);
+      console.log($("canvas")[0].toDataURL().split(',')[1]);
+      getImageData();
+
     });
 
     // Attach the video stream to the video element and autoplay.
@@ -40,7 +48,7 @@
           "content": $("canvas")[0].toDataURL().split(',')[1]
         },
         "features": [{
-          "type": "LABEL_DETECTION",
+          "type": "FACE_DETECTION",
           "maxResults": 1
         }]
       }]
@@ -54,7 +62,49 @@
     })
     .done(function(response) {
       console.log(response);
-      $("#imageData").html("<pre>" + JSON.stringify(response) + "</pre>");
+      
+      var data = response;
+          // TODO - handle "no face" condition
+                  var faceVertices = response.responses[0].faceAnnotations[0].boundingPoly.vertices;
+                  console.log(faceVertices);
+                  
+                  // find corners
+                  var topLeft = faceVertices[0];
+                  var bottomRight = faceVertices[2];
+                  console.log(bottomRight, bottomRight.x, topLeft, topLeft.x);
+                  
+                  // determine width and height for cropping
+                  var faceWidth = bottomRight.x - topLeft.x;
+                  var faceHeight = bottomRight.y - topLeft.y;
+                  var sourceX = topLeft.x;
+                  var sourceY = topLeft.y;
+                  var destWidth = faceWidth;
+                  var destHeight = faceHeight;
+
+
+                   // check to see whether we need to start a new row or column
+                  if (nextX > collageCanvas.width) {
+                    nextX = 0;
+                    nextY += faceHeight;
+                  }
+                  
+                  if (nextY + faceHeight > collageCanvas.height) {
+                    // make the collage taller as needed
+                    //   but resizing clears it, so we need to
+                    //   save and redraw the data
+                    
+                    var imgData=collageContext.getImageData(0,0,collageCanvas.width, collageCanvas.height);
+
+                    collageCanvas.height += faceHeight;
+                    collageContext.putImageData(imgData,0,0);
+                  }                  
+       
+                  collageContext.drawImage(canvas, sourceX, sourceY, faceWidth, faceHeight, nextX, nextY, faceWidth, faceHeight); 
+                  nextX += faceWidth;
+                
+                
+                //getImageData();
+      //$("#imageData").html("<pre>" + JSON.stringify(response) + "</pre>");
     })
     .fail(function(err) {
       throw err;
@@ -67,3 +117,8 @@
 </body>
 
 </html>
+
+
+    
+    
+        

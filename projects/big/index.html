@@ -131,6 +131,7 @@
 <script>
 $(function() {
  
+ 
   (function(name) {
     var container = $('#pagination-' + name);
     var url = "https://api.nytimes.com/svc/topstories/v2/home.json";
@@ -164,10 +165,24 @@ $(function() {
         $.each(response, function (index, item) {
         if (item.multimedia[0] !== undefined) {
           var multimedia = item.multimedia[0];
+          
+        
+        dataHtml += "<div class='mdc-card'>" +
+                        "<div class='mdc-card__media mdc-card__media--square'>"+
+                          "<div class='mdc-card__media-content'>";
+            
+        dataHtml += "<img src='" + multimedia.url + "'/>";
+        dataHtml += '<li>' + item.title + "<br><br>"  + item.byline + '</li>';
+        dataHtml += "</div></div>" +
+            "<div class='mdc-card__actions'>" +
+              "<div class='mdc-card__action-buttons'>" +
+              "<a class='mdc-button mdc-card__action mdc-card__action--button' href='" + item.url+"'>Go to Aricle</a>" +
+            "</div>" +
+          "<div class='mdc-card__action-icons'></div>" +
+        "</div>" +
+      "</div>"; 
 
-          dataHtml += "<img src='" + multimedia.url + "'/>";
 
-          dataHtml += '<li>' + item.title + "<br>"  + item.byline + '</li>';
         }
         });
         dataHtml += '</ul>';
@@ -176,6 +191,10 @@ $(function() {
     })
   })('demo2');
 })
+
+function visitAricle(url) {
+    document.getElementById("demo").innerHTML = "Hello World";
+}
 </script>
 	</body>
 </html>

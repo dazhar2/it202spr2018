@@ -12,8 +12,10 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://unpkg.com/material-components-web@0.9.1/dist/material-components-web.min.js"></script>
   <script src="scripts/pagination.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
   <link href="styles/pagination.css" rel="stylesheet" type="text/css">
     <style type="text/css">
+
         ul, li {
             list-style: none;
         }
@@ -38,6 +40,34 @@
         #page1{
           width:100%;
         }
+        
+        .news-image{
+          position:absolute;
+          overflow:auto;
+          display:block;
+          padding-top:20px;
+        }
+        
+        .news-content{
+          overflow:auto;
+          padding-left: 90px;
+          font-family: 'Karla', sans-serif;
+          display:block;
+
+        }
+        
+        .news-title{
+          font-size:30px;
+        }
+        
+        .mdc-toolbar__title, .mdc-button{
+        font-family: 'Karla', sans-serif;
+        }
+        
+        .mdc-card{
+            background-color: white;
+            font-family: 'Karla', sans-serif;
+        }
     </style>
 </head>
 <body class="mdc-typography">
@@ -52,7 +82,7 @@
 			   data-mdc-auto-init="MDCRipple"
 			   data-mdc-ripple-is-unbounded>menu</a>
       <h1 
-          class="mdc-toolbar__title"><span>Potato</span></h1>
+          class="mdc-toolbar__title"><span>Good Morning</span></h1>
     </section>
   </div>
 	</header>
@@ -76,7 +106,7 @@
 
       <div class="view" id="page1">
             <div id="wrapper">
-                <h1>Page 1</h1>
+                <h1> Today's News</h1>
 
                 <section>
                     <div class="data-container"></div>
@@ -161,7 +191,7 @@ $(function() {
       },
       callback: function(response, pagination) {
         window.console && console.log(22, response, pagination);
-        var dataHtml = '<ul>';
+        var dataHtml = '';
         $.each(response, function (index, item) {
         if (item.multimedia[0] !== undefined) {
           var multimedia = item.multimedia[0];
@@ -171,12 +201,12 @@ $(function() {
                         "<div class='mdc-card__media mdc-card__media--square'>"+
                           "<div class='mdc-card__media-content'>";
             
-        dataHtml += "<img src='" + multimedia.url + "'/>";
-        dataHtml += '<li>' + item.title + "<br><br>"  + item.byline + '</li>';
+        dataHtml += "<div class='news-image'><img src='" + multimedia.url + "'/></div>";
+        dataHtml += "<div  class='news-content'><p class='news-title'>" + item.title + "</p></div><br><div class='news-content'>"  + item.byline + '</div>';
         dataHtml += "</div></div>" +
             "<div class='mdc-card__actions'>" +
               "<div class='mdc-card__action-buttons'>" +
-              "<a class='mdc-button mdc-card__action mdc-card__action--button' href='" + item.url+"'>Go to Aricle</a>" +
+              "<a class='mdc-button mdc-card__action mdc-card__action--button news-card' href='" + item.url+"'>Go to Aricle</a>" +
             "</div>" +
           "<div class='mdc-card__action-icons'></div>" +
         "</div>" +
@@ -185,7 +215,6 @@ $(function() {
 
         }
         });
-        dataHtml += '</ul>';
         container.prev().html(dataHtml);
       }
     })

@@ -7,10 +7,12 @@ html, body {
 
 h1{
   color:black;
-  font-family: "Futura";
-}
+            font-family: 'Karla', sans-serif;
+} 
 
-.shrine-product-card {
+.shrine-product-card { 
+            font-family: 'Karla', sans-serif;
+
   width: 320px;
   border-radius: 4px;
   margin-bottom: 8px;
@@ -77,6 +79,7 @@ h1{
 
 #shrine-nav-menu .mdc-temporary-drawer__drawer {
   background-color: #fafafa;
+
 }
 
 #shrine-nav-menu .mdc-temporary-drawer__header {

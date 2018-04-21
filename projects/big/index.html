@@ -1,229 +1,594 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <title>Potato</title>
+  <link rel="canonical" href="https://weather-pwa-sample.firebaseapp.com/final/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="https://unpkg.com/material-components-web@0.9.1/dist/material-components-web.min.css">
-
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://unpkg.com/material-components-web@0.9.1/dist/material-components-web.min.css">
+  <link rel="stylesheet" href="styles/weather-icons.min.css">
+  <link rel="stylesheet" href="styles/weather.css">
   <link rel="stylesheet" href="styles/inline.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script src="https://unpkg.com/material-components-web@0.9.1/dist/material-components-web.min.js"></script>
-  <script src="scripts/pagination.js"></script>
+  <link rel="stylesheet" href="styles/pagination.css">
   <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
-  <link href="styles/pagination.css" rel="stylesheet" type="text/css">
-    <style type="text/css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/material-components-web@0.9.1/dist/material-components-web.min.js"></script>
+  <script src="scripts/pagination.js"></script>
+  <script src="scripts/app.js" async></script>
+  <script src="scripts/news.js"></script>
+  <style type='text/css'>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    #map {
+        height: 100%;
+      }
+      
+    #mapContainer{
+      height: 300px;
+      width: 100%;
+    }
 
-        ul, li {
-            list-style: none;
-        }
-        #wrapper {
-            width: 900px;
-            margin: 20px auto;
-        }
-        .data-container {
-            margin-top: 20px;
-        }
-        .data-container ul {
-            padding: 0;
-            margin: 0;
-        }
-        .data-container li {
-            margin-bottom: 5px;
-            padding: 5px 10px;
-            background: #eee;
-            color: #666;
-        }
-        
-        #page1{
-          width:100%;
-        }
-        
-        .news-image{
-          position:absolute;
-          overflow:auto;
-          display:block;
-          padding-top:20px;
-        }
-        
-        .news-content{
-          overflow:auto;
-          padding-left: 90px;
-          font-family: 'Karla', sans-serif;
-          display:block;
+    #map-canvas {
+      width: 100%;
+      height: 100%;
+    }
 
-        }
-        
-        .news-title{
-          font-size:30px;
-        }
-        
-        .mdc-toolbar__title, .mdc-button{
-        font-family: 'Karla', sans-serif;
-        }
-        
-        .mdc-card{
-            background-color: white;
-            font-family: 'Karla', sans-serif;
-        }
-    </style>
+    .gm-style-iw {
+      text-align: center;
+    }
+
+    ul,
+    li {
+      list-style: none;
+    }
+
+    #wrapper {
+      width: 900px;
+      margin: 20px auto;
+    }
+
+    .data-container {
+      margin-top: 20px;
+    }
+
+    .data-container ul {
+      padding: 0;
+      margin: 0;
+    }
+
+    .data-container li {
+      margin-bottom: 5px;
+      padding: 5px 10px;
+      background: #eee;
+      color: #666;
+    }
+
+    #page1 {
+      width: 100%;
+    }
+
+    .news-image {
+      position: absolute;
+      overflow: auto;
+      display: block;
+      padding-top: 20px;
+    }
+
+    .news-content {
+      overflow: auto;
+      padding-left: 90px;
+      font-family: 'Karla', sans-serif;
+      display: block;
+
+    }
+
+    .news-title {
+      font-size: 30px;
+    }
+
+    .mdc-toolbar__title,
+    .mdc-button {
+      font-family: 'Karla', sans-serif;
+    }
+
+    .mdc-card {
+      background-color: white;
+      font-family: 'Karla', sans-serif;
+    }
+
+    .weatherContainer {
+      width: 100px;
+
+    }
+
+    .weatherBox {
+      width: 50px;
+      height: 50px;
+      display: block;
+    }
+
+    #weather-icon {
+      width: 50px;
+    }
+
+    button {
+      background: transparent;
+      border: none;
+      color: #989898;
+      font-size: 30px;
+    }
+
+    .weatherIcon,
+    .weatherContainer,
+    .weatherBox {
+      display: inline-block;
+    }
+  </style>
 </head>
+
 <body class="mdc-typography">
-<header id="shrine-header"
-        class="mdc-toolbar mdc-toolbar--fixed mdc-theme--text-primary-on-background">
-  <div class="mdc-toolbar__row">
-    <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
-			<a id="shrine-nav-icon" class="material-icons mdc-ripple-surface" style="color:black"
-			    href="#"
-			   aria-label="Click to show the navigation menu"
-			   aria-controls="shrine-nav-menu"
-			   data-mdc-auto-init="MDCRipple"
-			   data-mdc-ripple-is-unbounded>menu</a>
-      <h1 
-          class="mdc-toolbar__title"><span>Good Morning</span></h1>
-    </section>
+  <header id="shrine-header" class="mdc-toolbar mdc-toolbar--fixed mdc-theme--text-primary-on-background">
+    <div class="mdc-toolbar__row">
+      <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
+        <a id="shrine-nav-icon" class="material-icons mdc-ripple-surface" style="color:black" href="#" aria-label="Click to show the navigation menu" aria-controls="shrine-nav-menu" data-mdc-auto-init="MDCRipple" data-mdc-ripple-is-unbounded>menu</a>
+        <h1 class="mdc-toolbar__title"><span>Good Morning</span></h1>
+      </section>
+    </div>
+  </header>
+
+
+  <aside id="shrine-nav-menu" class="mdc-temporary-drawer" data-mdc-auto-init="MDCTemporaryDrawer">
+    <nav class="mdc-temporary-drawer__drawer">
+      <header class="mdc-temporary-drawer__header"></header>
+      <nav class="mdc-temporary-drawer__content mdc-list">
+        <a class="mdc-list-item" id="showPage1Btn" data-launch-view="page1">Page 1</a>
+        <a class="mdc-list-item" id="showPage2Btn" data-launch-view="page2">Page 2</a>
+        <a class="mdc-list-item" id="showPage3Btn" data-launch-view="page3">Page 3</a>
+      </nav>
+    </nav>
+  </aside>
+  <div class="view" id="page1">
+    <main id="shrine-products" class="mdc-layout-grid mdc-toolbar-fixed-adjust">
+
+      <div id="wrapper">
+        <h1> Today's News</h1>
+
+        <section>
+          <div class="data-container"></div>
+          <div id="pagination-demo2"></div>
+        </section>
+      </div>
+    </main>
   </div>
-	</header>
-	
-	
-	<aside id="shrine-nav-menu" class="mdc-temporary-drawer" data-mdc-auto-init="MDCTemporaryDrawer">
-	  <nav class="mdc-temporary-drawer__drawer">
-	    <header class="mdc-temporary-drawer__header"></header>
-	    <nav class="mdc-temporary-drawer__content mdc-list">
-	      <a class="mdc-list-item" id="showPage1Btn" data-launch-view="page1">Page 1</a>
-	      <a class="mdc-list-item" id="showPage2Btn" data-launch-view="page2">Page 2</a>
-	      <a class="mdc-list-item" id="showPage3Btn" data-launch-view="page3">Page 3</a>
-	    </nav>
-	  </nav>
-	</aside>
-	<main id="shrine-products" class="mdc-layout-grid mdc-toolbar-fixed-adjust">
-    
-    
-    
-   
 
-      <div class="view" id="page1">
-            <div id="wrapper">
-                <h1> Today's News</h1>
+  <div class="view hide" id="page2">
 
-                <section>
-                    <div class="data-container"></div>
-                    <div id="pagination-demo2"></div>
-                </section>
+    <main class="mdc-toolbar-fixed-adjust main">
+      <h1> Today's Weather</h1>
+      <div class="card cardTemplate weather-forecast" hidden>
+        <div class="city-key" hidden></div>
+        <div class="card-last-updated" hidden></div>
+        <div class="location"></div>
+        <div class="date"></div>
+        <div class="description"></div>
+        <div class="current">
+          <div class="visual">
+            <div class="icon"></div>
+            <div class="temperature">
+              <span class="value"></span><span class="scale">°F</span>
+            </div>
+          </div>
+          <div class="description">
+            <div class="humidity"></div>
+            <div class="wind">
+              <span class="value"></span>
+              <span class="scale">mph</span>
+              <span class="direction"></span>°
+            </div>
+            <div class="sunrise"></div>
+            <div class="sunset"></div>
+          </div>
+        </div>
+        <div class="future">
+          <div class="oneday">
+            <div class="date"></div>
+            <div class="icon"></div>
+            <div class="temp-high">
+              <span class="value"></span>°
+            </div>
+            <div class="temp-low">
+              <span class="value"></span>°
+            </div>
+          </div>
+          <div class="oneday">
+            <div class="date"></div>
+            <div class="icon"></div>
+            <div class="temp-high">
+              <span class="value"></span>°
+            </div>
+            <div class="temp-low">
+              <span class="value"></span>°
+            </div>
+          </div>
+          <div class="oneday">
+            <div class="date"></div>
+            <div class="icon"></div>
+            <div class="temp-high">
+              <span class="value"></span>°
+            </div>
+            <div class="temp-low">
+              <span class="value"></span>°
+            </div>
+          </div>
+          <div class="oneday">
+            <div class="date"></div>
+            <div class="icon"></div>
+            <div class="temp-high">
+              <span class="value"></span>°
+            </div>
+            <div class="temp-low">
+              <span class="value"></span>°
+            </div>
+          </div>
+          <div class="oneday">
+            <div class="date"></div>
+            <div class="icon"></div>
+            <div class="temp-high">
+              <span class="value"></span>°
+            </div>
+            <div class="temp-low">
+              <span class="value"></span>°
+            </div>
+          </div>
+          <div class="oneday">
+            <div class="date"></div>
+            <div class="icon"></div>
+            <div class="temp-high">
+              <span class="value"></span>°
+            </div>
+            <div class="temp-low">
+              <span class="value"></span>°
+            </div>
+          </div>
+          <div class="oneday">
+            <div class="date"></div>
+            <div class="icon"></div>
+            <div class="temp-high">
+              <span class="value"></span>°
+            </div>
+            <div class="temp-low">
+              <span class="value"></span>°
+            </div>
+          </div>
         </div>
       </div>
-      
-        <div class="view hide" id="page2">
-          <h1>Page 2</h1>
-        </div>
-
-    <div class="view hide" id="page3">
-            <h1>Page 3</h1>
-        </div>
 
 
-    </div>
+
+    </main>
     
+      <div id="mapContainer">
+        <div id="map"></div>
+      </div>
+  </div>
 
- 
+  <div class="view hide" id="page3">
+    <main class="main">
+      <h1>Page 3</h1>
+    </main>
+  </div>
 
 
-  </main>
 
 
-	<script>
-	  mdc.autoInit();
-	  document.getElementById('shrine-nav-icon').addEventListener('click', function(evt) {
-	    evt.preventDefault();
-	    document.getElementById('shrine-nav-menu').MDCTemporaryDrawer.open = true;
-	  });
-	  
-	  $(document).ready(function (e) {
+  <script>
+    mdc.autoInit();
+    document.getElementById('shrine-nav-icon').addEventListener('click', function(evt) {
+      evt.preventDefault();
+      document.getElementById('shrine-nav-menu').MDCTemporaryDrawer.open = true;
+    });
+
+    $(document).ready(function(e) {
       $("#page2").hide();
       $("#page3").hide();
-      
-        function showView(viewName) {
-            $('.view').hide();
-            $('#' + viewName).show();
-        }
 
-        $('[data-launch-view]').click(function (e) {
-            e.preventDefault();
-            var viewName = $(this).attr('data-launch-view');
-            showView(viewName);
-        });
-  
-})
-	</script>
-	
-<script>
-$(function() {
- 
- 
-  (function(name) {
-    var container = $('#pagination-' + name);
-    var url = "https://api.nytimes.com/svc/topstories/v2/home.json";
-      url += '?' + $.param({
-        'api-key': "bb39364e5757463f839f9b6d8bbb5027" });
-        
-    container.pagination({
-      
-      
-    dataSource: function(done) {
-        $.ajax({
-            type: 'GET',
-            url: url,
-            success: function(response) {
-              console.log(response);
-                done(response.results);
-            }
-        });
-     },
-      locator: 'results',
-      totalNumber: 120,
-      pageSize: 10,
-      ajax: {
-        beforeSend: function() {
-          container.prev().html('Loading data ...');
-        }
-      },
-      callback: function(response, pagination) {
-        window.console && console.log(22, response, pagination);
-        var dataHtml = '';
-        $.each(response, function (index, item) {
-        if (item.multimedia[0] !== undefined) {
-          var multimedia = item.multimedia[0];
-          
-        
-        dataHtml += "<div class='mdc-card'>" +
-                        "<div class='mdc-card__media mdc-card__media--square'>"+
-                          "<div class='mdc-card__media-content'>";
-            
-        dataHtml += "<div class='news-image'><img src='" + multimedia.url + "'/></div>";
-        dataHtml += "<div  class='news-content'><p class='news-title'>" + item.title + "</p></div><br><div class='news-content'>"  + item.byline + '</div>';
-        dataHtml += "</div></div>" +
-            "<div class='mdc-card__actions'>" +
-              "<div class='mdc-card__action-buttons'>" +
-              "<a class='mdc-button mdc-card__action mdc-card__action--button news-card' href='" + item.url+"'>Go to Aricle</a>" +
-            "</div>" +
-          "<div class='mdc-card__action-icons'></div>" +
-        "</div>" +
-      "</div>"; 
-
-
-        }
-        });
-        container.prev().html(dataHtml);
+      function showView(viewName) {
+        $('.view').hide();
+        $('#' + viewName).show();
       }
-    })
-  })('demo2');
-})
 
-function visitAricle(url) {
-    document.getElementById("demo").innerHTML = "Hello World";
-}
-</script>
-	</body>
+      $('[data-launch-view]').click(function(e) {
+        e.preventDefault();
+        var viewName = $(this).attr('data-launch-view');
+        showView(viewName);
+      });
+
+
+      (function(name) {
+        var container = $('#pagination-' + name);
+        var url = "https://api.nytimes.com/svc/topstories/v2/home.json";
+        url += '?' + $.param({
+          'api-key': "bb39364e5757463f839f9b6d8bbb5027"
+        });
+
+        container.pagination({
+
+
+          dataSource: function(done) {
+            $.ajax({
+              type: 'GET',
+              url: url,
+              dataType: "json",
+              success: function(response) {
+                console.log(response);
+                done(response.results);
+              }
+            });
+          },
+          locator: 'results',
+          totalNumber: 120,
+          pageSize: 10,
+          ajax: {
+            beforeSend: function() {
+              container.prev().html('Loading data ...');
+            }
+          },
+          callback: function(response, pagination) {
+            window.console && console.log(22, response, pagination);
+            var dataHtml = '';
+            $.each(response, function(index, item) {
+              if (item.multimedia[0] !== undefined) {
+                var multimedia = item.multimedia[0];
+
+
+                dataHtml += "<div class='mdc-card'>" +
+                  "<div class='mdc-card__media mdc-card__media--square'>" +
+                  "<div class='mdc-card__media-content'>";
+
+                dataHtml += "<div class='news-image'><img src='" + multimedia.url + "'/></div>";
+                dataHtml += "<div  class='news-content'><p class='news-title'>" + item.title + "</p></div><br><div class='news-content'>" + item.byline + '</div>';
+                dataHtml += "</div></div>" +
+                  "<div class='mdc-card__actions'>" +
+                  "<div class='mdc-card__action-buttons'>" +
+                  "<a class='mdc-button mdc-card__action mdc-card__action--button news-card' target='_blank' href='" + item.url + "'>Go to Aricle</a>" +
+                  "</div>" +
+                  "<div class='mdc-card__action-icons'></div>" +
+                  "</div>" +
+                  "</div>";
+              }
+            });
+            container.prev().html(dataHtml);
+          }
+        })
+      })('demo2');
+
+    })
+  </script>
+
+  <script async>
+    var app = {
+      isLoading: true,
+      visibleCards: {},
+      selectedCities: [],
+      cardTemplate: document.querySelector('.cardTemplate'),
+      container: document.querySelector('.main'),
+      addDialog: document.querySelector('.dialog-container'),
+      daysOfWeek: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    };
+
+    document.getElementById("showPage2Btn").addEventListener("click", showWeather);
+
+    function showWeather() {
+      if (navigator.geolocation) {
+        console.log("poooooooo");
+        navigator.geolocation.getCurrentPosition(showPosition);
+        console.log("shittt");
+      }
+      else {
+        console.log("no");
+      }
+
+      function showPosition(position) {
+        app.getForecast(position);
+      }
+
+    }
+
+    app.updateForecastCard = function(data) {
+      var dataLastUpdated = new Date(data.created);
+      var sunrise = data.channel.astronomy.sunrise;
+      var sunset = data.channel.astronomy.sunset;
+      var current = data.channel.item.condition;
+      var humidity = data.channel.atmosphere.humidity;
+      var wind = data.channel.wind;
+
+      var card = app.visibleCards[data.key];
+      if (!card) {
+        card = app.cardTemplate.cloneNode(true);
+        card.classList.remove('cardTemplate');
+        card.querySelector('.location').textContent = data.label;
+        card.removeAttribute('hidden');
+        app.container.appendChild(card);
+        app.visibleCards[data.key] = card;
+      }
+
+      card.querySelector('.description').textContent = current.text;
+      card.querySelector('.date').textContent = current.date;
+      card.querySelector('.current .icon').classList.add(app.getIconClass(current.code));
+      card.querySelector('.current .temperature .value').textContent =
+        Math.round(current.temp);
+      card.querySelector('.current .sunrise').textContent = sunrise;
+      card.querySelector('.current .sunset').textContent = sunset;
+      card.querySelector('.current .humidity').textContent =
+        Math.round(humidity) + '%';
+      card.querySelector('.current .wind .value').textContent =
+        Math.round(wind.speed);
+      card.querySelector('.current .wind .direction').textContent = wind.direction;
+      var nextDays = card.querySelectorAll('.future .oneday');
+      var today = new Date();
+      today = today.getDay();
+      for (var i = 0; i < 7; i++) {
+        var nextDay = nextDays[i];
+        var daily = data.channel.item.forecast[i];
+        if (daily && nextDay) {
+          nextDay.querySelector('.date').textContent =
+            app.daysOfWeek[(i + today) % 7];
+          nextDay.querySelector('.icon').classList.add(app.getIconClass(daily.code));
+          nextDay.querySelector('.temp-high .value').textContent =
+            Math.round(daily.high);
+          nextDay.querySelector('.temp-low .value').textContent =
+            Math.round(daily.low);
+        }
+      }
+
+    };
+
+    app.getForecast = function(position) {
+      console.log(position.coords.latitude + "," + position.coords.longitude);
+
+      var url = 'https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22(' +
+        position.coords.latitude + '%2C' + position.coords.longitude + ')%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys';
+
+
+      console.log("WOOOW");
+      var xhr = new XMLHttpRequest();
+
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status === 200) {
+            console.log("Yeeesss");
+            var response = JSON.parse(xhr.response);
+            var results = response.query.results;
+            results.created = response.query.created;
+            app.updateForecastCard(results);
+          }
+        }
+        else {
+          console.log("fuuuuck");
+        }
+      };
+
+      xhr.open('GET', url);
+      xhr.send();
+    };
+
+
+
+    app.getIconClass = function(weatherCode) {
+      // Weather codes: https://developer.yahoo.com/weather/documentation.html#codes
+      weatherCode = parseInt(weatherCode);
+      switch (weatherCode) {
+        case 25: // cold
+        case 32: // sunny
+        case 33: // fair (night)
+        case 34: // fair (day)
+        case 36: // hot
+        case 3200: // not available
+          return 'clear-day';
+        case 0: // tornado
+        case 1: // tropical storm
+        case 2: // hurricane
+        case 6: // mixed rain and sleet
+        case 8: // freezing drizzle
+        case 9: // drizzle
+        case 10: // freezing rain
+        case 11: // showers
+        case 12: // showers
+        case 17: // hail
+        case 35: // mixed rain and hail
+        case 40: // scattered showers
+          return 'rain';
+        case 3: // severe thunderstorms
+        case 4: // thunderstorms
+        case 37: // isolated thunderstorms
+        case 38: // scattered thunderstorms
+        case 39: // scattered thunderstorms (not a typo)
+        case 45: // thundershowers
+        case 47: // isolated thundershowers
+          return 'thunderstorms';
+        case 5: // mixed rain and snow
+        case 7: // mixed snow and sleet
+        case 13: // snow flurries
+        case 14: // light snow showers
+        case 16: // snow
+        case 18: // sleet
+        case 41: // heavy snow
+        case 42: // scattered snow showers
+        case 43: // heavy snow
+        case 46: // snow showers
+          return 'snow';
+        case 15: // blowing snow
+        case 19: // dust
+        case 20: // foggy
+        case 21: // haze
+        case 22: // smoky
+          return 'fog';
+        case 24: // windy
+        case 23: // blustery
+          return 'windy';
+        case 26: // cloudy
+        case 27: // mostly cloudy (night)
+        case 28: // mostly cloudy (day)
+        case 31: // clear (night)
+          return 'cloudy';
+        case 29: // partly cloudy (night)
+        case 30: // partly cloudy (day)
+        case 44: // partly cloudy
+          return 'partly-cloudy-day';
+      }
+    };
+
+    var map, infoWindow;
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: -34.397, lng: 150.644 },
+        zoom: 6
+      });
+      infoWindow = new google.maps.InfoWindow;
+
+      // Try HTML5 geolocation.
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          infoWindow.setPosition(pos);
+          infoWindow.setContent('Location found.');
+          infoWindow.open(map);
+          map.setCenter(pos);
+        }, function() {
+          handleLocationError(true, infoWindow, map.getCenter());
+        });
+      }
+      else {
+        // Browser doesn't support Geolocation
+        handleLocationError(false, infoWindow, map.getCenter());
+      }
+    }
+
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+      infoWindow.setPosition(pos);
+      infoWindow.setContent(browserHasGeolocation ?
+        'Error: The Geolocation service failed.' :
+        'Error: Your browser doesn\'t support geolocation.');
+      infoWindow.open(map);
+    }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVu7g0xWmPW4MltQHT_CjzGmNa_zNM4sA&callback=initMap"></script>
+
+</body>
+
 </html>

@@ -24,7 +24,6 @@
 .paginationjs .paginationjs-go-button,
 .paginationjs .paginationjs-go-input,
 .paginationjs .paginationjs-nav {
-    float: left;
     margin-left: 10px;
     font-size: 14px
 }
@@ -134,7 +133,7 @@
 
 .paginationjs .paginationjs-go-button,
 .paginationjs .paginationjs-go-input {
-    margin-left: 5px\9
+    margin-left: 0 auto;
 }
 
 .paginationjs.paginationjs-small {

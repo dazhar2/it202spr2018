@@ -659,15 +659,8 @@
 
       $("#checkboxTable").append(taskItem);
 
-      var j = 0;
-      for (var i = 0; i < taskNum; i++) {
-        if ($('#' + (i - 1) + 'box').is(":checked")) {
-          console.log("yes indeedio " + (i - 1));
-          addToDatabase($('#' + (i - 1) + 'label').text());
-          j++;
-        }
+      addToDatabase($('#' + (taskNum - 1) + 'label').text());
 
-      }
     }
 
     var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;

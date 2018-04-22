@@ -8,6 +8,8 @@ html, body {
 h1{
   color:black;
             font-family: 'Karla', sans-serif;
+                  padding-left:20px;
+
 } 
 
 .shrine-product-card { 

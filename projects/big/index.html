@@ -48,6 +48,10 @@
       height: 100%;
     }
 
+    #input-fields {
+      padding-left: 20px;
+    }
+
     .gm-style-iw {
       text-align: center;
     }
@@ -125,6 +129,12 @@
     #weather-icon {
       width: 50px;
     }
+    
+
+    .checkboxSpace{
+      margin-right: 500px;
+    }
+
 
     button {
       background: transparent;
@@ -287,12 +297,29 @@
   </div>
 
   <div class="view hide" id="page3">
-    <main class="main">
-      <h1>Page 3</h1>
+    <main class="main mdc-toolbar-fixed-adjust">
+      <h1>Today's To-Do List</h1>
+      <section id="input-fields">
+        <div class="mdc-text-field mdc-text-field--textarea mdc-text-field--upgraded">
+          <h3> Create Task</h3>
+          <textarea id="taskField" class="mdc-text-field__input" rows="3" cols="40"></textarea>
+        </div>
+        <button id="addtask" class="mdc-button">Add task to list</button>
+        <h3> Task List</h3>
+
+        <div class="mdc-form-field"> <table >
+          <tbody  id="checkboxTable">
+            
+          </tbody>
+          
+          
+        </table>
+    
+        </div>
+      </section>
+
     </main>
   </div>
-
-
 
 
   <script>
@@ -608,7 +635,140 @@
       }
     };
   </script>
+  <script>
+    document.getElementById("addtask").addEventListener("click", addTask);
+    var taskNum = 0;
 
+    function addTask() {
+      var task = document.getElementById("taskField").value;
+      var taskItem = "<tr><td><div class='mdc-checkbox'>" +
+        "<input type='checkbox' class='mdc-checkbox__native-control' id='" + taskNum + "box'/>" +
+        "<div class='mdc-checkbox__background'>" +
+        "<svg class='mdc-checkbox__checkmark' viewBox='0 0 24 24'>" +
+        "<path class='mdc-checkbox__checkmark-path' " +
+        "fill='none'" +
+        "stroke='white'" +
+        "d='M1.73,12.91 8.1,19.28 22.79,4.59'/>" +
+        "</svg>" +
+        "<div class='mdc-checkbox__mixedmark'></div>" +
+        "</div>" +
+        "</div>" +
+        "<label for='my-checkbox' id='" + taskNum + "label'>" + task + "</label></td></tr>";
+
+      taskNum++;
+
+      $("#checkboxTable").append(taskItem);
+
+      var j = 0;
+      for (var i = 0; i < taskNum; i++) {
+        if ($('#' + (i - 1) + 'box').is(":checked")) {
+          console.log("yes indeedio " + (i - 1));
+          addToDatabase($('#' + (i - 1) + 'label').text());
+          j++;
+        }
+
+      }
+    }
+
+    var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+
+    function addToDatabase(task) {
+      var open = indexedDB.open("MyDatabase", 1);
+
+      // Create the schema
+      open.onupgradeneeded = function() {
+        var db = open.result;
+        var store = db.createObjectStore("MyObjectStore", { keyPath:"id", autoIncrement : true });
+        var index = store.createIndex("TaskIndex", "task", { unique: true });
+      };
+
+      open.onsuccess = function() {
+        // Start a new transaction
+        var db = open.result;
+        var tx = db.transaction("MyObjectStore", "readwrite");
+        var store = tx.objectStore("MyObjectStore");
+        var index = store.index("TaskIndex");
+
+        store.add({ task: task });
+
+        tx.oncomplete = function() {
+          db.close();
+        };
+      }
+    }
+
+    $(document).ready(function(e) {
+      var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+
+      var open = indexedDB.open("MyDatabase", 1);
+
+      // Create the schema
+      open.onupgradeneeded = function() {
+        var db = open.result;
+        var store = db.createObjectStore("MyObjectStore", { autoIncrement : true });
+        var index = store.createIndex("TaskIndex", "task");
+      };
+
+      open.onsuccess = function() {
+        // Start a new transaction
+        var db = open.result;
+        
+
+
+
+          var tx = db.transaction("MyObjectStore", "readwrite");
+            var store = tx.objectStore("MyObjectStore");
+
+              var request = store.openCursor();
+
+              request.onerror = function(event) {
+                 console.err("error fetching data");
+              };
+              request.onsuccess = function(event) {
+                 let cursor = event.target.result;
+                 if (cursor) {
+                     let key = cursor.primaryKey;
+                     let value = cursor.value;
+                     console.log(key, value.task);
+
+                      var taskItem = "<tr><td><div class='mdc-checkbox'>" +
+                        "<input type='checkbox' class='mdc-checkbox__native-control' id='" + key + "box'/>" +
+                        "<div class='mdc-checkbox__background'>" +
+                        "<svg class='mdc-checkbox__checkmark' viewBox='0 0 24 24'>" +
+                        "<path class='mdc-checkbox__checkmark-path' " +
+                        "fill='none'" +
+                        "stroke='white'" +
+                        "d='M1.73,12.91 8.1,19.28 22.79,4.59'/>" +
+                        "</svg>" +
+                        "<div class='mdc-checkbox__mixedmark'></div>" +
+                        "</div>" +
+                        "</div>" +
+                        "<label for='my-checkbox' id='" + key + "label'>" + value.task + "</label></td></tr>";
+
+                      taskNum++;
+                      console.log(taskItem);
+                    $("#checkboxTable").append(taskItem);
+                    
+                    cursor.continue();
+                 }
+                 else {
+                     // no more results
+                 }
+              };
+
+              
+                tx.oncomplete = function() {
+                  db.close();
+              }
+              
+              
+          }
+          
+        
+      
+
+    })
+  </script>
 </body>
 
 </html>

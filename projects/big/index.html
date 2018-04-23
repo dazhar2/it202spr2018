@@ -129,9 +129,9 @@
     #weather-icon {
       width: 50px;
     }
-    
 
-    .checkboxSpace{
+
+    .checkboxSpace {
       margin-right: 500px;
     }
 
@@ -307,14 +307,15 @@
         <button id="addtask" class="mdc-button">Add task to list</button>
         <h3> Task List</h3>
 
-        <div class="mdc-form-field"> <table >
-          <tbody  id="checkboxTable">
-            
-          </tbody>
-          
-          
-        </table>
-    
+        <div class="mdc-form-field">
+          <table>
+            <tbody id="checkboxTable">
+
+            </tbody>
+
+
+          </table>
+
         </div>
       </section>
 
@@ -420,13 +421,9 @@
 
     function showWeather() {
       if (navigator.geolocation) {
-        console.log("poooooooo");
         navigator.geolocation.getCurrentPosition(showPosition);
-        console.log("shittt");
       }
-      else {
-        console.log("no");
-      }
+      else {}
 
       function showPosition(position) {
         app.getForecast(position);
@@ -436,13 +433,11 @@
     }
 
     function getWeatherMap(lat, lng) {
-      // Configure Aeris API keys
       aeris.config.set({
         apiId: '6pbnOP9CAOsJuPO54Amtc',
         apiSecret: 'Z03Peiy0fqffc1Or4WQq1k17r6QND8C5LqUWvpSy'
       });
 
-      // Create the map, where 'map-canvas' is the id of an HTML element.
       var map = new aeris.maps.Map('map-canvas', {
         zoom: 8,
         center: [lat, lng],
@@ -459,14 +454,12 @@
         map: map
       });
 
-      // Create 'admin-cities' layer
       var adminCitiesDk = new aeris.maps.layers.AerisTile({
         tileType: 'admin-cities-dk',
         zIndex: 6,
         map: map
       });
 
-      // Create 'satellite' layer
       var satellite = new aeris.maps.layers.AerisTile({
         tileType: 'satellite',
         zIndex: 7,
@@ -487,7 +480,6 @@
         to: Date.now()
       });
 
-      // Start the animation
       animation.start();
     }
 
@@ -547,22 +539,18 @@
         position.coords.latitude + '%2C' + position.coords.longitude + ')%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys';
 
 
-      console.log("WOOOW");
       var xhr = new XMLHttpRequest();
 
       xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
           if (xhr.status === 200) {
-            console.log("Yeeesss");
             var response = JSON.parse(xhr.response);
             var results = response.query.results;
             results.created = response.query.created;
             app.updateForecastCard(results);
           }
         }
-        else {
-          console.log("fuuuuck");
-        }
+        else {}
       };
 
       xhr.open('GET', url);
@@ -572,7 +560,6 @@
 
 
     app.getIconClass = function(weatherCode) {
-      // Weather codes: https://developer.yahoo.com/weather/documentation.html#codes
       weatherCode = parseInt(weatherCode);
       switch (weatherCode) {
         case 25: // cold
@@ -671,7 +658,7 @@
       // Create the schema
       open.onupgradeneeded = function() {
         var db = open.result;
-        var store = db.createObjectStore("MyObjectStore", { keyPath:"id", autoIncrement : true });
+        var store = db.createObjectStore("MyObjectStore", { keyPath: "id", autoIncrement: true });
         var index = store.createIndex("TaskIndex", "task", { unique: true });
       };
 
@@ -698,68 +685,59 @@
       // Create the schema
       open.onupgradeneeded = function() {
         var db = open.result;
-        var store = db.createObjectStore("MyObjectStore", { autoIncrement : true });
+        var store = db.createObjectStore("MyObjectStore", { autoIncrement: true });
         var index = store.createIndex("TaskIndex", "task");
       };
 
       open.onsuccess = function() {
         // Start a new transaction
         var db = open.result;
-        
 
+        var tx = db.transaction("MyObjectStore", "readwrite");
+        var store = tx.objectStore("MyObjectStore");
 
+        var request = store.openCursor();
 
-          var tx = db.transaction("MyObjectStore", "readwrite");
-            var store = tx.objectStore("MyObjectStore");
+        request.onerror = function(event) {
+          console.err("error fetching data");
+        };
+        request.onsuccess = function(event) {
+          let cursor = event.target.result;
+          if (cursor) {
+            let key = cursor.primaryKey;
+            let value = cursor.value;
+            console.log(key, value.task);
 
-              var request = store.openCursor();
+            var taskItem = "<tr><td><div class='mdc-checkbox'>" +
+              "<input type='checkbox' class='mdc-checkbox__native-control' id='" + key + "box'/>" +
+              "<div class='mdc-checkbox__background'>" +
+              "<svg class='mdc-checkbox__checkmark' viewBox='0 0 24 24'>" +
+              "<path class='mdc-checkbox__checkmark-path' " +
+              "fill='none'" +
+              "stroke='white'" +
+              "d='M1.73,12.91 8.1,19.28 22.79,4.59'/>" +
+              "</svg>" +
+              "<div class='mdc-checkbox__mixedmark'></div>" +
+              "</div>" +
+              "</div>" +
+              "<label for='my-checkbox' id='" + key + "label'>" + value.task + "</label></td></tr>";
 
-              request.onerror = function(event) {
-                 console.err("error fetching data");
-              };
-              request.onsuccess = function(event) {
-                 let cursor = event.target.result;
-                 if (cursor) {
-                     let key = cursor.primaryKey;
-                     let value = cursor.value;
-                     console.log(key, value.task);
+            taskNum++;
+            console.log(taskItem);
+            $("#checkboxTable").append(taskItem);
 
-                      var taskItem = "<tr><td><div class='mdc-checkbox'>" +
-                        "<input type='checkbox' class='mdc-checkbox__native-control' id='" + key + "box'/>" +
-                        "<div class='mdc-checkbox__background'>" +
-                        "<svg class='mdc-checkbox__checkmark' viewBox='0 0 24 24'>" +
-                        "<path class='mdc-checkbox__checkmark-path' " +
-                        "fill='none'" +
-                        "stroke='white'" +
-                        "d='M1.73,12.91 8.1,19.28 22.79,4.59'/>" +
-                        "</svg>" +
-                        "<div class='mdc-checkbox__mixedmark'></div>" +
-                        "</div>" +
-                        "</div>" +
-                        "<label for='my-checkbox' id='" + key + "label'>" + value.task + "</label></td></tr>";
-
-                      taskNum++;
-                      console.log(taskItem);
-                    $("#checkboxTable").append(taskItem);
-                    
-                    cursor.continue();
-                 }
-                 else {
-                     // no more results
-                 }
-              };
-
-              
-                tx.oncomplete = function() {
-                  db.close();
-              }
-              
-              
+            cursor.continue();
           }
-          
-        
-      
+          else {
+            // no more results
+          }
+        };
 
+
+        tx.oncomplete = function() {
+          db.close();
+        }
+      }
     })
   </script>
 </body>

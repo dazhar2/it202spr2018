@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Theme Made By www.w3schools.com - No Copyright -->
+  <title>Project 2</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <style>
+    #home {
+      padding-top: 30px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    h1,
+    h2 {
+      text-align: center;
+    }
+    
+    #searchButton{
+      margin-top: 20px;
+    }
+
+
+  </style>
+</head>
+<body>
+
+
+
+  <div class="col-md-12 container text-center" id="home">
+    <h1>Chicago Clinics</h1>
+    <row>
+      <div class="col-md-4 "></div>
+      <div class="col-md-4 h-100 row align-items-center">
+        <p>
+          Search for a type of Clinic in the dropdown, then press search.</p>
+      </div>
+      <div class="col-md-4 "></div>
+    </row>
+    <div class="col-md-12 text-center">
+      <form id="myForm">
+          <select id="select" >
+            <option>Clinic Type Options</option>
+          </select>
+        </form>
+    </div>
+    <row>
+      <div class="col-md-12 text-center">
+      <button type="button" class="btn btn-danger" id="searchButton">Search</button>
+    </div>
+    </row>
+  </div>
+  
+
+
+
+  <div class="container" id="mapResult">
+    <h1> Chicago Public Schools Map</h1>
+    <div id="googleMap" style="height:400px;width:100%;"></div>
+    <div class="col-md-12 text-center">
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+     
+      var uniqueClinicsUrl = "https://data.cityofchicago.org/resource/t57k-za2y.json?$SELECT=distinct%20clinic_type ";
+
+      $.ajax({
+        url: uniqueClinicsUrl,
+        method: 'GET',
+      }).
+      done(function(result) {
+        console.log(result);
+        createSearchOptions(result);
+      }).
+      fail(function(err) {
+        throw err;
+      });
+      
+      
+    });
+    
+    function createSearchOptions(response) {
+      var i = 0;
+      $.each(response, function(i, clinic) {
+        $('#select').append($('<option></option>').val(i).html(clinic.clinic_type));
+        i++;
+      });
+    }
+    
+    document.getElementById("searchButton").addEventListener("click", showSearch);
+    
+    function showSearch() {
+      var selectMenu = document.getElementById("select");
+      clinicTypeIndex = selectMenu.selectedIndex;
+      var selectedClinicType = selectMenu.options[clinicTypeIndex].text;
+
+      console.log("CHOSEN: " + selectedClinicType);
+      var url = "https://data.cityofchicago.org/resource/t57k-za2y.json?clinic_type=" + selectedClinicType;
+
+      $.ajax({
+        url: url,
+        method: 'GET',
+      }).
+      done(function(result) {
+        console.log(result);
+        //createSearchOptions(result);
+      }).
+      fail(function(err) {
+        throw err;
+      });
+    }
+
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVu7g0xWmPW4MltQHT_CjzGmNa_zNM4sA&callback=myMap"></script>
+
+</body>
+
+</html>

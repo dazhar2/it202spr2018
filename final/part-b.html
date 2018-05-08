@@ -55,13 +55,16 @@
       <button type="button" class="btn btn-danger" id="searchButton">Search</button>
     </div>
     </row>
+    <row>
+     <div class="list-group" id="listOfClinics"> </div>
+    </row>
   </div>
+  
   
 
 
-
   <div class="container" id="mapResult">
-    <h1> Chicago Public Schools Map</h1>
+    <h1> Chicago Public Clinic Map</h1>
     <div id="googleMap" style="height:400px;width:100%;"></div>
     <div class="col-md-12 text-center">
     </div>
@@ -111,13 +114,81 @@
       }).
       done(function(result) {
         console.log(result);
-        //createSearchOptions(result);
+        displayClinics(result);
       }).
       fail(function(err) {
         throw err;
       });
     }
+    
+    var clinicData = new Set();
+    var markers = new Array();
+    
+    function displayClinics(results) {
+      clincData = results;
+      document.getElementById("listOfClinics").innerHTML = " ";
+      $.each(results, function(i, clinic) {
+          content = "<div class='list-group-item list-group-item-action flex-column align-items-start'>" +
+                    "<div class='d-flex w-100 justify-content-between'>" +
+                    "<h5 class='mb-1'>" + clinic.site_name + "</h5>" +
+                    "<small class='text-muted'>" + clinic.clinc_type +"</small>" +
+                    "</div>" + 
+                    "<p class='mb-1'>" + clinic.street_address + "</p>" +
+                    "<p class='mb-1'>" + clinic.city + " " + clinic.state + ", " + clinic.zip + "</p>" +
+                    "<p class='mb-1'>" + clinic.phone_1 + "</p>" +
+                    "<small class='text-muted'>" + clinic.hours_of_operation +"</small>" +
+                    "</div>";
+        
+        $("#listOfClinics").append(content)
+        //locationsSet.add(school.location.coordinates);
+        clinicData.add(clinic);
+      });
+      
+      removeMarkers();
+      myMap();
+    }
 
+    function removeMarkers() {
+      console.log(markers.length);
+      for (i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+      }
+
+      markers = new Array();
+    }
+    
+    function myMap() {
+      var myCenter = new google.maps.LatLng(41.881832, -87.623177);
+      var mapProp = { center: myCenter, zoom: 12, scrollwheel: false, draggable: false, mapTypeId: google.maps.MapTypeId.ROADMAP };
+      var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+
+      for (let clinic of clinicData) {
+        console.log(clinic.location.coordinates);
+        var location = clinic.location.coordinates;
+        var lat = location[1];
+        var long = location[0];
+        var position = new google.maps.LatLng(lat, long);
+        var marker = new google.maps.Marker({
+          position: position,
+          map: map,
+          title: 'Chicago',
+        });
+
+        var infowindow = new google.maps.InfoWindow({
+          content: "<p>" + clinic.site_name + "</p>"
+        });
+
+        google.maps.event.addListener(marker, 'mouseover', (function(marker) {
+          return function() {
+            var content = "<p>" + clinic.site_name + "</p>";
+            infowindow.setContent(content);
+            infowindow.open(map, marker);
+          }
+        })(marker));
+
+        markers.push(marker);
+      }
+    }
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVu7g0xWmPW4MltQHT_CjzGmNa_zNM4sA&callback=myMap"></script>
 

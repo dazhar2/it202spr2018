@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Potato</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+    <style type='text/css'>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body class="mdc-typography">
+
+
+    <div>
+        <h1>Table of Friends</h1>
+        <row>
+            <h3> Create Friend</h3>
+        </row>
+        <textarea id="friendField"></textarea>
+    </div>
+    <button id="addFriend" class="btn btn-danger">Add Friend Name</button>
+    <h3> Friend Table</h3>
+
+    <row>
+        <div>
+            <table class="table" id="friendTable">
+                <tr>
+                    <th scope='col'> ID </th>
+                    <th scope='col'> Name </th>
+                </tr>
+            </table>
+        </div>
+    </row>
+
+
+
+    <script>
+        document.getElementById("addFriend").addEventListener("click", addFriend);
+        var friendNum = 0;
+
+        function addFriend() {
+            var friend = document.getElementById("friendField").value;
+            var friendItem = "<tr>"+
+                            "<th scope='col'>" + friendNum + "</th>" + 
+                            "<th scope='col'>" + friend + "</th></tr>";
+
+            friendNum++;
+
+            $("#friendTable").append(friendItem);
+
+            addToDatabase(friend);
+
+        }
+
+        var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+
+        function addToDatabase(friend) {
+            var open = indexedDB.open("MyDatabase", 1);
+
+            // Create the schema
+            open.onupgradeneeded = function() {
+                var db = open.result;
+                var store = db.createObjectStore("MyObjectStore", { keyPath: "id", autoIncrement: true });
+                var index = store.createIndex("FriendIndex", "friend", { unique: true });
+            };
+
+            open.onsuccess = function() {
+                var db = open.result;
+                var tx = db.transaction("MyObjectStore", "readwrite");
+                var store = tx.objectStore("MyObjectStore");
+                var index = store.index("FriendIndex");
+
+                store.add({ friend: friend });
+
+                tx.oncomplete = function() {
+                    db.close();
+                };
+            }
+        }
+
+        $(document).ready(function(e) {
+            var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+
+            var open = indexedDB.open("MyDatabase", 1);
+
+            // Create the schema
+            open.onupgradeneeded = function() {
+                var db = open.result;
+                var store = db.createObjectStore("MyObjectStore", { autoIncrement: true });
+                var index = store.createIndex("FriendIndex", "friend");
+            };
+
+            open.onsuccess = function() {
+                // Start a new transaction
+                var db = open.result;
+
+                var tx = db.transaction("MyObjectStore", "readwrite");
+                var store = tx.objectStore("MyObjectStore");
+
+                var request = store.openCursor();
+
+                request.onerror = function(event) {
+                    console.err("error fetching data");
+                };
+                request.onsuccess = function(event) {
+                    let cursor = event.target.result;
+                    if (cursor) {
+                        let key = cursor.primaryKey;
+                        let value = cursor.value;
+                        console.log(key, value.friend);
+
+                        var friendItem = "<tr>"+
+                            "<th scope='col'>" + key + "</th>" + 
+                            "<th scope='col'>" + value.friend + "</th></tr>";
+
+                        friendNum++;
+                        console.log(value.friend);
+                        $("#friendTable").append(friendItem);
+
+                        cursor.continue();
+                    }
+                    else {
+                        // no more results
+                    }
+                };
+
+
+                tx.oncomplete = function() {
+                    db.close();
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
